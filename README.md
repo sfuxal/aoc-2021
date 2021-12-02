@@ -5,9 +5,7 @@
 
 
 
-## Solutions
-
-<!--SOLUTIONS-->
+## Puzzles
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/1)
 [![Day](https://badgen.net/badge/02/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/2)
@@ -34,8 +32,6 @@
 [![Day](https://badgen.net/badge/23/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/23)
 [![Day](https://badgen.net/badge/24/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/24)
 [![Day](https://badgen.net/badge/25/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/25)
-
-<!--/SOLUTIONS-->
 
 _Click a badge to go to the specific day._
 
