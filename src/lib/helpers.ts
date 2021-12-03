@@ -1,5 +1,5 @@
-export function toInt(str: string): number {
-  return Number.parseInt(str, 10);
+export function toInt(str: string, radix: number = 10): number {
+  return Number.parseInt(str, radix);
 }
 
 export function toString(num: number): string {
