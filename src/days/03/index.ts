@@ -49,20 +49,35 @@ function makeBuckets(input: string[], index: number): Buckets {
   }, { one: [], zero: [] })
 }
 
-function getRating(input: string[], binaryLength: number, kind: 'least common' | 'most common'): string {
-  let results = input;
+
+export function two(_input: string[]): number {
+  const binaryLength = _input[0].length;
+
+  const results = {
+    oxygen: _input,
+    co2: _input,
+  }
   let index = 0;
 
   /**
    * going for a while loop here cause it's a way we can cope for not having one value
    * but already being through all bits
    */
-  while (results.length > 1) {
-    const buckets: Buckets = makeBuckets(results, index);
-    const condition = kind === 'most common'
-      ? buckets.one.length >= buckets.zero.length
-      : buckets.one.length < buckets.zero.length
-    results = condition ? buckets.one : buckets.zero;
+  while(results.oxygen.length > 1 || results.co2.length > 1) {
+    if(results.oxygen.length > 1) {
+      const oxygenBuckets: Buckets = makeBuckets(results.oxygen, index);
+      results.oxygen = oxygenBuckets.one.length >= oxygenBuckets.zero.length
+        ? oxygenBuckets.one
+        : oxygenBuckets.zero;
+    }
+
+    if(results.co2.length > 1) {
+      const co2Buckets: Buckets = makeBuckets(results.co2, index);
+      results.co2 = co2Buckets.one.length < co2Buckets.zero.length
+        ? co2Buckets.one
+        : co2Buckets.zero;
+    }
+
     /**
      * Wasn't specified but this is a fallback in case we reach the last bit but
      * haven't drilled down to one binary. I start over with the first bit in that case.
@@ -70,17 +85,9 @@ function getRating(input: string[], binaryLength: number, kind: 'least common' |
     if (index === (binaryLength - 1)) index = 0;
     else index++;
   }
-  return results[0];
-}
 
+  const oxygenRating = toInt(results.oxygen[0], 2);
+  const co2Rating = toInt(results.co2[0], 2);
 
-export function two(_input: string[]): number {
-  const binaryLength = _input[0].length;
-  /**
-   * Could also solve with one gigantic reduce. Would need to calculate both rates
-   * during that one loop.
-   */
-  const oxygenRating = toInt(getRating(_input, binaryLength, 'most common'), 2);
-  const co2Rating = toInt(getRating(_input, binaryLength, 'least common'), 2);
   return oxygenRating * co2Rating;
 }
