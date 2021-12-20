@@ -37,7 +37,7 @@ function formatInput(_input: string[]) {
 
 function makeMappingAndDrawBlueprint(boards: string[][][]) {
   const mapping: Mapping = {};
-  const drawing:Drawing = [];
+  const drawing: Drawing = [];
 
   for (let boardI = 0; boardI < boards.length; boardI++) {
     for (let rowI = 0; rowI < boards[boardI].length; rowI++) {
@@ -48,17 +48,17 @@ function makeMappingAndDrawBlueprint(boards: string[][][]) {
           { boardI, rowI, columnI }
         ]
 
-        if(!drawing[boardI]) drawing[boardI] = { rows: [], columns: []};
+        if (!drawing[boardI]) drawing[boardI] = { rows: [], columns: [] };
 
-        if(!drawing[boardI].rows[rowI]) drawing[boardI].rows.push([val]);
+        if (!drawing[boardI].rows[rowI]) drawing[boardI].rows.push([val]);
         else drawing[boardI].rows[rowI][columnI] = val;
 
-        if(!drawing[boardI].columns[columnI]) drawing[boardI].columns.push([val])
+        if (!drawing[boardI].columns[columnI]) drawing[boardI].columns.push([val])
         else drawing[boardI].columns[columnI][rowI] = val;
       }
     }
   }
-  return {mapping, drawing};
+  return { mapping, drawing };
 }
 
 function draw(
@@ -72,26 +72,27 @@ function draw(
   return drawing;
 }
 
-function checkWinner(boardsDrawing: Drawing): number | undefined {
-  let winnerIndex;
+function checkWinner(boardsDrawing: Drawing, indexesToExclude: number[] = []): number[] | undefined {
+  const winnerIndexes = [];
   for (let boardI = 0; boardI < boardsDrawing.length; boardI++) {
+    if (indexesToExclude.includes(boardI)) continue;
+
     const board = boardsDrawing[boardI];
     if (
       board.rows.some((row) => row.every((item) => item === 'X'))
       || board.columns.some((column) => column.every((item) => item === 'X'))
     ) {
-      winnerIndex = boardI;
-      break;
+      winnerIndexes.push(boardI);
     }
   }
-  return winnerIndex || undefined
+  return winnerIndexes ?? undefined
 }
 
-function sumUnmarked(boardDrawing:DrawingEntry):number {
-  const {rows} = boardDrawing;
-  const sum = rows.reduce<number>((acc:number, row:string[]) => {
+function sumUnmarked(boardDrawing: DrawingEntry): number {
+  const { rows } = boardDrawing;
+  const sum = rows.reduce<number>((acc: number, row: string[]) => {
     return acc + row.reduce((acc, val) => {
-      if(val === 'X') return acc;
+      if (val === 'X') return acc;
       return acc + toInt(val)
     }, 0)
   }, 0)
@@ -100,7 +101,7 @@ function sumUnmarked(boardDrawing:DrawingEntry):number {
 
 export function one(_input: string[]): number {
   const { drawInput, boards } = formatInput(_input);
-  const {mapping, drawing: drawBlueprint} = makeMappingAndDrawBlueprint(boards);
+  const { mapping, drawing: drawBlueprint } = makeMappingAndDrawBlueprint(boards);
 
   let boardsDrawing: Drawing = drawBlueprint;
   let winningBoardIndex: number | undefined;
@@ -113,16 +114,39 @@ export function one(_input: string[]): number {
     boardsDrawing = draw(boardsDrawing, occurrences);
 
     if (drawI >= (boards[0][0].length - 1)) {
-      winningBoardIndex = checkWinner(boardsDrawing);
+      const winners = checkWinner(boardsDrawing);
+      if (winners) winningBoardIndex = winners[0];
       if (winningBoardIndex) break;
     }
   }
 
-  if(!winningBoardIndex) throw Error('No board won');
+  if (!winningBoardIndex) throw Error('No board won');
   const sum = sumUnmarked(boardsDrawing[winningBoardIndex]);
   return sum * toInt(value);
 }
 
 export function two(_input: string[]): number {
-  return 0;
+  const { drawInput, boards } = formatInput(_input);
+  const { mapping, drawing: drawBlueprint } = makeMappingAndDrawBlueprint(boards);
+
+  let boardsDrawing: Drawing = drawBlueprint;
+  const winningIndexes: number[] = [];
+  let value: string = '';
+
+  for (let drawI = 0; drawI < drawInput.length; drawI++) {
+    value = drawInput[drawI];
+    const occurrences = mapping[value];
+
+    boardsDrawing = draw(boardsDrawing, occurrences);
+
+    if (drawI >= (boards[0][0].length - 1)) {
+      const winners = checkWinner(boardsDrawing, winningIndexes);
+      if (winners) winningIndexes.push(...winners);
+      if (winningIndexes.length === boards.length) break;
+    }
+  }
+  const lastWinningIndex = winningIndexes[winningIndexes.length - 1];
+  if (lastWinningIndex == null) throw Error('No board won');
+  const sum = sumUnmarked(boardsDrawing[lastWinningIndex]);
+  return sum * toInt(value);
 }

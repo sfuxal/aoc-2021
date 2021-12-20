@@ -10,7 +10,7 @@
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/1)
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/2)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/3)
-[![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%86/gray)](https://adventofcode.com/2021/day/4)
+[![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/4)
 [![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/5)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/6)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/7)
