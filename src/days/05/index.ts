@@ -28,7 +28,8 @@ function formatInput(input: string[]): Line[] {
     })
 }
 
-function checkDirection(line: Line): 'horizontal' | 'vertical' | undefined {
+function checkDirection(line: Line): 'horizontal' | 'vertical' | 'diagonal' | undefined {
+  if (Math.abs(line.start.x - line.end.x) === Math.abs(line.start.y - line.end.y)) return 'diagonal';
   if (line.start.x === line.end.x) return 'vertical';
   if (line.start.y === line.end.y) return 'horizontal';
   return undefined;
@@ -56,7 +57,30 @@ function drawVertical(drawing: number[][], column: number, rowStart: number, row
   return drawing;
 }
 
-function draw(lines: Line[]): number[][] {
+function drawDiagonal(
+  drawing: number[][],
+  rowStart: number,
+  rowEnd: number,
+  colStart: number,
+  colEnd: number
+): number[][] {
+  let rowI = rowStart;
+  let colI = colStart;
+
+  while (rowStart < rowEnd ? rowI <= rowEnd : rowI >= rowEnd) {
+    if (!drawing[rowI]) drawing[rowI] = [];
+    if (drawing[rowI][colI] == null) drawing[rowI][colI] = 0;
+    drawing[rowI][colI]++;
+
+    if (rowStart < rowEnd) rowI++;
+    else rowI--;
+    if (colStart < colEnd) colI++;
+    else colI--;
+  }
+  return drawing;
+}
+
+function draw(lines: Line[], considerDiagonal: boolean = false): number[][] {
   let drawing: number[][] = [];
 
   lines.forEach((line) => {
@@ -74,6 +98,10 @@ function draw(lines: Line[]): number[][] {
         const column = line.start.x;
         drawing = drawVertical(drawing, column, rowStart, rowEnd);
         break;
+      case 'diagonal':
+        if (!considerDiagonal) break;
+        drawing = drawDiagonal(drawing, line.start.y, line.end.y, line.start.x, line.end.x);
+        break;
       default:
         break;
     }
@@ -81,19 +109,24 @@ function draw(lines: Line[]): number[][] {
   return drawing;
 }
 
-export function one(_input: string[]): number {
-  const lines = formatInput(_input);
-  const drawing = draw(lines);
-  const count = drawing.reduce<number>((acc:number, row:number[]) => {
-    if(row == null) return acc;
+function evaluate(drawing: number[][]): number {
+  return drawing.reduce<number>((acc: number, row: number[]) => {
+    if (row == null) return acc;
     return acc + row.reduce<number>((acc: number, value: number) => {
-      if(value >= 2) acc++;
+      if (value >= 2) acc++;
       return acc;
     }, 0)
   }, 0);
-  return count;
+}
+
+export function one(_input: string[]): number {
+  const lines = formatInput(_input);
+  const drawing = draw(lines);
+  return evaluate(drawing);
 }
 
 export function two(_input: string[]): number {
-  return 0;
+  const lines = formatInput(_input);
+  const drawing = draw(lines, true);
+  return evaluate(drawing);
 }
