@@ -1,7 +1,11 @@
 import { toInt } from "../../lib/helpers";
 
+function transformInput(input: string[]) {
+  return input[0].split(',').map((timer) => toInt(timer))
+}
+
 export function one(_input: string[]): number {
-  let timers = _input[0].split(',').map((timer) => toInt(timer));
+  let timers = transformInput(_input);
   let day = 1;
 
   while (day <= 80) {
@@ -30,5 +34,32 @@ export function one(_input: string[]): number {
 }
 
 export function two(_input: string[]): number {
-  return 0;
+  let initialTimers = transformInput(_input);
+
+  /**
+   * Array of fish counts per timer (0...8)
+   */
+  const timerCounts: number[] = Array(9).fill(0);
+  initialTimers.forEach((timer) => { timerCounts[timer]++ });
+
+  let day = 1;
+
+  while (day <= 256) {
+    const zeroTimerCount = timerCounts[0];
+
+    for (let timer = 0; timer < timerCounts.length - 1; timer++) {
+      // move fish count per timer to next lower timer
+      timerCounts[timer] = timerCounts[timer + 1] ?? 0;
+    }
+
+    timerCounts[6] = timerCounts[6] + zeroTimerCount;
+    timerCounts[8] = zeroTimerCount;
+
+    day++;
+  }
+
+  return timerCounts.reduce((totalCount, timerCount) => {
+    totalCount = totalCount + timerCount;
+    return totalCount
+  }, 0);
 }
