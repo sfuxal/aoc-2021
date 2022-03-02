@@ -20,7 +20,7 @@ function getConnectionMap(input: string[]): ConnectionMap {
 }
 
 /**
- * Caves that have only a single connection to a small cave are irrelevant.
+ * Caves that have only a single connection to a small cave are irrelevant for part one.
  * Those caves can be removed from the map.
  */
 function removeIrrelevantCaves(_map: ConnectionMap): ConnectionMap {
@@ -43,15 +43,43 @@ function removeIrrelevantCaves(_map: ConnectionMap): ConnectionMap {
   return map;
 }
 
-function constructTree(curCave: string, parentPath: string[], connectionMap: ConnectionMap, paths: string[][]) {
+function partOneFilter(connectedCave: string, path: string[]): boolean {
+  return connectedCave !== 'start'
+    && (!getIsSmall(connectedCave) || !path.includes(connectedCave))
+}
+
+function getPathIncludesSmallDoubleVisit(path: string[]): boolean {
+  const occurrences: Record<string, number> = {};
+  for (let i = 0; i < path.length; i++) {
+    if (!getIsSmall(path[i])) continue;
+    if (occurrences[path[i]]) return true;
+    occurrences[path[i]] = 1;
+  }
+  return false;
+}
+
+function partTwoFilter(connectedCave: string, path: string[]) {
+  return connectedCave !== 'start'
+    && (
+      !getIsSmall(connectedCave)
+      || !path.includes(connectedCave)
+      || !getPathIncludesSmallDoubleVisit(path)
+    )
+}
+
+function constructTree(
+  curCave: string,
+  parentPath: string[],
+  connectionMap: ConnectionMap,
+  paths: string[][],
+  filterFunction: (cave: string, path: string[]) => boolean
+) {
   const path = [...parentPath, curCave];
   const options: Option[] = curCave === 'end'
     ? []
     : connectionMap[curCave]
-      .filter((connectedCave) => (
-        connectedCave !== 'start' && !(getIsSmall(connectedCave) && path.includes(connectedCave))
-      ))
-      .map((cave) => constructTree(cave, path, connectionMap, paths))
+      .filter((connectedCave) => filterFunction(connectedCave, path))
+      .map((cave) => constructTree(cave, path, connectionMap, paths, filterFunction))
 
   if (curCave === 'end') paths.push(path);
 
@@ -66,11 +94,16 @@ export function one(_input: string[]): number {
   connectionMap = removeIrrelevantCaves(connectionMap);
 
   const paths: string[][] = [];
-  constructTree('start', [], connectionMap, paths);
+  constructTree('start', [], connectionMap, paths, partOneFilter);
 
   return paths.length;
 }
 
 export function two(_input: string[]): number {
-  return 0;
+  const connectionMap: ConnectionMap = getConnectionMap(_input);
+
+  const paths: string[][] = [];
+  constructTree('start', [], connectionMap, paths, partTwoFilter);
+
+  return paths.length;
 }
