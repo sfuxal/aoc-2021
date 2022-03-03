@@ -19,7 +19,7 @@
 [![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/10)
 [![Day](https://badgen.net/badge/11/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/11)
 [![Day](https://badgen.net/badge/12/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/12)
-[![Day](https://badgen.net/badge/13/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/13)
+[![Day](https://badgen.net/badge/13/%E2%98%85%E2%98%85/gray)](https://adventofcode.com/2021/day/13)
 [![Day](https://badgen.net/badge/14/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/14)
 [![Day](https://badgen.net/badge/15/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/15)
 [![Day](https://badgen.net/badge/16/%E2%98%86%E2%98%86/gray)](https://adventofcode.com/2021/day/16)
@@ -35,7 +35,7 @@
 
 _Click a badge to go to the specific day._
 
-**Favourite Puzzle 🤩 🥳 : Day 10, 12**
+**Favourite Puzzle 🤩 🥳 : Day 10, 12, 13**
 
 ---
 
