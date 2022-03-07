@@ -1,3 +1,4 @@
+import cloneDeep from "lodash/cloneDeep";
 import { toInt } from "../../lib/helpers";
 
 // Implementation of A* search algorithm 
@@ -71,8 +72,7 @@ function heuristic(targetCoordinate: Coordinate, nextCoordinate: Coordinate): nu
   return Math.abs(targetCoordinate.row - nextCoordinate.row) + Math.abs(targetCoordinate.col - nextCoordinate.col)
 }
 
-export function one(_input: string[]): number {
-  const riskLevelMap = formatInput(_input);
+function findLowestTotalRiskLevel(riskLevelMap: RiskLevelMap): number {
   const targetCoordinate = getTargetCoordinate(riskLevelMap);
 
   /**
@@ -120,6 +120,46 @@ export function one(_input: string[]): number {
   return costSoFar[toLocationId(targetCoordinate)] || 0;
 }
 
+function maybeWrap(newLevel: number): number {
+  return newLevel > 9 ? newLevel - 9 : newLevel
+}
+
+function expandMap(initialMap: RiskLevelMap, count: number): RiskLevelMap {
+  const initialRowCount = initialMap.length;
+  const expandedMap: RiskLevelMap = cloneDeep(initialMap);
+
+  expandedMap.forEach((row, rowIndex) => {
+    for (let step = 1; step < count; step++) {
+      if (initialMap[rowIndex]) {
+
+        initialMap[rowIndex].forEach((level) => {
+          const newLevel = maybeWrap(level + step);
+          row.push(newLevel);
+        })
+      }
+    }
+  })
+
+  for (let rowIndex = initialRowCount; rowIndex < (count * initialRowCount); rowIndex++) {
+    const step = Math.floor(rowIndex / initialRowCount);
+
+    for (let colIndex = 0; colIndex < expandedMap[0].length; colIndex++) {
+      const initialRowIndex = rowIndex - step * initialRowCount;
+      const newLevel = maybeWrap(expandedMap[initialRowIndex][colIndex] + step);
+      if (!expandedMap[rowIndex]) expandedMap.push([newLevel])
+      else expandedMap[rowIndex].push(newLevel);
+    }
+  }
+
+  return expandedMap;
+}
+
+export function one(_input: string[]): number {
+  const riskLevelMap = formatInput(_input);
+  return findLowestTotalRiskLevel(riskLevelMap);
+}
+
 export function two(_input: string[]): number {
-  return 0;
+  const riskLevelMap = expandMap(formatInput(_input), 5);
+  return findLowestTotalRiskLevel(riskLevelMap);
 }
